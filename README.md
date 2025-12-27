@@ -1,2 +1,2 @@
 # Carter-Maxcy-cloud-project
-Repo containing an ongoing cloud project.
+Users should include a .env like the example provided.
