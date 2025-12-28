@@ -17,3 +17,14 @@ def register():
     db.session.commit()
 
     return jsonify({'message': 'User created'}), 201
+
+@auth.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    user = User.query.filter_by(email=data['email']).first()
+
+    if user and check_password_hash(user.password_hash, data['password']):
+        login_user(user)
+        return jsonify({'message': 'Logged in'})
+
+    return jsonify({'message': 'Invalid credentials'}), 401
