@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask
 from flask_login import LoginManager
 from config import Config
@@ -12,8 +14,14 @@ def load_user(user_id):
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    logging.info('Initializing DB...')
     db.init_app(app)
+    logging.info('DB initialized.')
+
+    logging.info('Initializing login manager...')
     login_manager.init_app(app)
+    logging.info('Login manager initialized.')
 
     from .routes.auth import auth
     from .routes.products import products

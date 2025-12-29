@@ -1,3 +1,5 @@
+import logging
+
 from flask import Blueprint, request, jsonify
 from flask_login import login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,15 +15,20 @@ def register():
         password_hash=generate_password_hash(data['password'])
     )
 
+    logging.info('Writing to DB...')
     db.session.add(user)
     db.session.commit()
+    logging.info('Done writing.')
 
     return jsonify({'message': 'User created'}), 201
 
 @auth.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
+
+    logging.info('Querying DB...')
     user = User.query.filter_by(email=data['email']).first()
+    logging.info('Done querying.')
 
     if user and check_password_hash(user.password_hash, data['password']):
         login_user(user)
