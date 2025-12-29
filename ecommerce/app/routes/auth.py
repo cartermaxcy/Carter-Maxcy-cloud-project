@@ -4,10 +4,12 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import db, User
+from app import limiter
 
 auth = Blueprint('auth', __name__)
 
 @auth.route('/register', methods=['POST'])
+@limiter.limit("5 per minute")
 def register():
     data = request.get_json()
     if 'email' not in data or 'password' not in data:
@@ -26,6 +28,7 @@ def register():
     return jsonify({'message': 'User created'}), 201
 
 @auth.route('/login', methods=['POST'])
+@limiter.limit("5 per minute")
 def login():
     data = request.get_json()
 

@@ -3,10 +3,12 @@ import logging
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
 from app.models import db, Product
+from app import limiter
 
 products = Blueprint('products', __name__)
 
 @products.route('/products', methods=['GET'])
+@limiter.limit("5 per minute")
 def get_products():
     logging.info('Querying DB...')
     products = Product.query.all()
@@ -23,6 +25,7 @@ def get_products():
 
 @products.route('/products', methods=['POST'])
 @login_required
+@limiter.limit("5 per minute")
 def create_product():
     data = request.get_json()
     if {'name', 'description', 'price', 'stock', 'image_url'} != data.keys():
@@ -45,6 +48,7 @@ def create_product():
 
 @products.route('/products/<int:id>', methods=['PUT'])
 @login_required
+@limiter.limit("5 per minute")
 def update_product(id):
     logging.info('Querying DB...')
     product = Product.query.get_or_404(id)
@@ -61,6 +65,7 @@ def update_product(id):
 
 @products.route('/products/<int:id>', methods=['DELETE'])
 @login_required
+@limiter.limit("5 per minute")
 def delete_product(id):
     logging.info('Querying DB...')
     product = Product.query.get_or_404(id)
