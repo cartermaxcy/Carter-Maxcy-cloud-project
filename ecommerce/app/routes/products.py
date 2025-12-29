@@ -25,6 +25,9 @@ def get_products():
 @login_required
 def create_product():
     data = request.get_json()
+    if {'name', 'description', 'price', 'stock', 'image_url'} != data.keys():
+        return jsonify({'message': 'Error: all product fields required'}), 400
+
     product = Product(
         name=data['name'],
         description=data['description'],

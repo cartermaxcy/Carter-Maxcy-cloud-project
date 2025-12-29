@@ -10,6 +10,9 @@ auth = Blueprint('auth', __name__)
 @auth.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
+    if 'email' not in data or 'password' not in data:
+        return jsonify({'message': 'Error: both email and password required'}), 400
+
     user = User(
         email=data['email'],
         password_hash=generate_password_hash(data['password'])

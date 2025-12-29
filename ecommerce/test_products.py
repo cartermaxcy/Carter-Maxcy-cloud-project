@@ -50,6 +50,21 @@ def test_create_product(client):
     })
     assert response.status_code == 201
 
+def test_create_invalid_product(client):
+    client.post('/register', json={
+        'email': 'test@example.com',
+        'password': 'test123'
+    })
+    client.post('/login', json={
+        'email': 'test@example.com',
+        'password': 'test123'
+    })
+    response = client.post('/products', json={
+        'name': 'test name',
+        'description' : 'test description',
+    })
+    assert response.status_code == 400
+
 def test_update_product(client):
     client.post('/register', json={
         'email': 'test@example.com',
