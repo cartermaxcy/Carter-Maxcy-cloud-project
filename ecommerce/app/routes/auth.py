@@ -28,3 +28,8 @@ def login():
         return jsonify({'message': 'Logged in'})
 
     return jsonify({'message': 'Invalid credentials'}), 401
+
+@auth.route('/logout', methods=['POST'])
+def logout():
+    logout_user()
+    return jsonify({'message': 'Logged out'})

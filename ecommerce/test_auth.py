@@ -40,3 +40,16 @@ def test_invalid_login(client):
         'password': 'test123'
     })
     assert response.status_code == 401
+
+def test_logout_after_login(client):
+    client.post('/register', json={
+        'email': 'test@example.com',
+        'password': 'test123'
+    })
+    client.post('/login', json={
+        'email': 'test@example.com',
+        'password': 'test123'
+    })
+    response = client.post('/logout', json={
+    })
+    assert response.status_code == 200
