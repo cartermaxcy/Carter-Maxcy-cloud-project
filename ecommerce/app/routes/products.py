@@ -1,27 +1,35 @@
 import logging
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from flask_login import login_required
 from app.models import db, Product
 from app import limiter
 
 products = Blueprint('products', __name__)
 
-@products.route('/products', methods=['GET'])
-@limiter.limit("5 per minute")
-def get_products():
+def get_products_internal():
     logging.info('Querying DB...')
     products = Product.query.all()
     logging.info('Done querying.')
 
-    return jsonify([{
+    return [{
         'id': p.id,
         'name': p.name,
         'description': p.description,
         'price': p.price,
         'stock': p.stock,
         'image_url': p.image_url
-    } for p in products])
+    } for p in products]
+
+@products.route('/browser/products', methods=['GET'])
+@limiter.limit("5 per minute")
+def get_products_browser():
+    return render_template('base.html', products=get_products_internal())
+
+@products.route('/products', methods=['GET'])
+@limiter.limit("5 per minute")
+def get_products():
+    return jsonify(get_products_internal())
 
 @products.route('/products', methods=['POST'])
 @login_required
