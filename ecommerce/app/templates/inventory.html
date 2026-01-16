@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <h1>    
+        Add an apple for $0.99?
+    </h1>
+    <button onclick="fetch('/proxy/5000/products', {
+        'method': 'POST',
+        'headers': {'Content-Type': 'application/json'},
+        'body': JSON.stringify({
+            'name': 'Apple',
+            'description' : 'A yummy fruit.',
+            'price': .99,
+            'stock': '',
+            'image_url': ''
+    }),
+    })">Add</button>
+    <h1>    
+        Add an orange for $0.90?
+    </h1>
+    <button onclick="fetch('/proxy/5000/products', {
+        'method': 'POST',
+        'headers': {'Content-Type': 'application/json'},
+        'body': JSON.stringify({
+            'name': 'Orange',
+            'description' : 'Another yummy fruit.',
+            'price': .9,
+            'stock': '',
+            'image_url': ''
+    }),
+    })">Add</button>
+</html>

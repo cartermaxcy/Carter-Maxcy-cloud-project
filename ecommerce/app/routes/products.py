@@ -21,6 +21,11 @@ def get_products_internal():
         'image_url': p.image_url
     } for p in products]
 
+@products.route('/browser/inventory', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
+def inventory_browser():
+    return render_template('inventory.html')
+
 @products.route('/browser/products', methods=['GET'])
 @limiter.limit("5 per minute")
 def get_products_browser():
