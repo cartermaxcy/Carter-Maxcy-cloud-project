@@ -1,9 +1,13 @@
+import boto3
 import logging
+import time
+
 
 from flask import Blueprint, request, jsonify, render_template
 from flask_login import login_required
 from app.models import db, Product
 from app import limiter
+from app import Config
 
 products = Blueprint('products', __name__)
 
@@ -35,6 +39,32 @@ def get_products_browser():
 @limiter.limit("5 per minute")
 def get_products():
     return jsonify(get_products_internal())
+
+@products.route('/checkout', methods=['POST'])
+@login_required
+@limiter.limit("5 per minute")
+def checkout():
+    dynamodb = boto3.resource('dynamodb',
+        region_name=Config.REGION_NAME,
+        aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=Config.AWS_SECRET_ACCESS_KEY
+    )
+
+    table = dynamodb.Table('Orders')
+
+    for product in get_products_internal():
+        item = {
+            'order_id': str(time.process_time_ns()),
+            'name': product['name']
+        }
+        table.put_item(Item=item)
+
+    logging.info('Deleting from DB...')
+    db.session.query(Product).delete()
+    db.session.commit()
+    logging.info('Done deleting')
+
+    return jsonify({'message': 'Checkout done'}), 201
 
 @products.route('/products', methods=['POST'])
 @login_required

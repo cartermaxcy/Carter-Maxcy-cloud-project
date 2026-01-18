@@ -14,4 +14,10 @@
           <hr>
         {% endfor %}
     </body>
+    <h1>    
+        Ready to checkout?
+    </h1>
+    <button onclick="fetch('/proxy/5000/checkout', {
+        'method': 'POST',
+    })">Checkout</button>
 </html>
