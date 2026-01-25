@@ -10,6 +10,7 @@ from app import limiter
 from app import Config
 
 products = Blueprint('products', __name__)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_products_internal():
     logging.info('Querying DB...')
@@ -44,6 +45,7 @@ def get_products():
 @login_required
 @limiter.limit("5 per minute")
 def checkout():
+    logging.info('Creating DynamoDB resource and writing to table...')
     dynamodb = boto3.resource('dynamodb',
         region_name=Config.REGION_NAME,
         aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
@@ -51,13 +53,15 @@ def checkout():
     )
 
     table = dynamodb.Table('Orders')
-
+    
     for product in get_products_internal():
         item = {
             'order_id': str(time.process_time_ns()),
             'name': product['name']
         }
         table.put_item(Item=item)
+
+    logging.info('Dynamo updated.')
 
     logging.info('Deleting from DB...')
     db.session.query(Product).delete()

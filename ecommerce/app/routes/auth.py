@@ -8,6 +8,8 @@ from app import limiter
 
 auth = Blueprint('auth', __name__)
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 @auth.route('/browser/register', methods=['GET', 'POST'])
 @limiter.limit("5 per minute")
 def register_browser():

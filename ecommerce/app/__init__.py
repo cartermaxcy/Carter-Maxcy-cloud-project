@@ -11,6 +11,8 @@ login_manager = LoginManager()
 
 limiter = Limiter(get_remote_address)
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
