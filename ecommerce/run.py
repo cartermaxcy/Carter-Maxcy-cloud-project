@@ -6,7 +6,7 @@ app = create_app()
 def welcome():
     return """
     Welcome User!
-    Append the following to the URL to view each page:
+    Register, login, select inventory, then checkout on the products page. Append the following to the URL to view each page:
     /browser/register,
     /browser/login,
     /browser/inventory,
