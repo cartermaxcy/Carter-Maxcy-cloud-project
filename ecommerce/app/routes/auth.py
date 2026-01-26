@@ -1,6 +1,6 @@
 import logging
 
-from flask import Blueprint, request, jsonify, render_template, redirect
+from flask import Blueprint, request, jsonify, render_template, redirect, flash
 from flask_login import login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import db, User
@@ -17,17 +17,20 @@ def register_browser():
         email = request.form['email']
         password = request.form['password']
 
-        user = User(
-            email=email,
-            password_hash=generate_password_hash(password)
-        )
+        if '@' not in email:
+            flash('Error in registration.')
+        else:
+            user = User(
+                email=email,
+                password_hash=generate_password_hash(password)
+            )
 
-        logging.info('Writing to DB...')
-        db.session.add(user)
-        db.session.commit()
-        logging.info('Done writing.')
+            logging.info('Writing to DB...')
+            db.session.add(user)
+            db.session.commit()
+            logging.info('Done writing.')
 
-        return redirect('/browser/login')
+            return redirect('/browser/login')
     return render_template('register.html')
 
 @auth.route('/register', methods=['POST'])
@@ -60,6 +63,9 @@ def login_browser():
         if user and check_password_hash(user.password_hash, request.form['password']):
             login_user(user)
             return redirect('/')
+
+        # Else show error
+        flash('Error logging in.')
         
     return render_template('login.html')
 
