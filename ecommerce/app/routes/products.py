@@ -58,7 +58,8 @@ def checkout():
         item = {
             'order_id': str(time.process_time_ns()),
             'name': product['name'],
-            'user': current_user.id,
+            'user_id': current_user.id,
+            'user_email': current_user.email,
         }
         table.put_item(Item=item)
 
