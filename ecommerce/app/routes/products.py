@@ -4,7 +4,7 @@ import time
 
 
 from flask import Blueprint, request, jsonify, render_template
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app.models import db, Product
 from app import limiter
 from app import Config
@@ -57,7 +57,8 @@ def checkout():
     for product in get_products_internal():
         item = {
             'order_id': str(time.process_time_ns()),
-            'name': product['name']
+            'name': product['name'],
+            'user': current_user.id,
         }
         table.put_item(Item=item)
 
