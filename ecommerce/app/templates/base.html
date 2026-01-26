@@ -4,7 +4,7 @@
         <title>Product List</title>
     </head>
     <body>
-        <h2> Products </h2>
+        <h2 style="color:blue;" > Products </h2>
         {% for product in  products%}
           <h3> Name: {{product.name}} </h3>
           <h4> Description: {{product.description}} </h4>
@@ -14,7 +14,7 @@
           <hr>
         {% endfor %}
     </body>
-    <h1>    
+    <h1 style="color:green;" >    
         Ready to checkout?
     </h1>
     <button onclick="fetch('/proxy/5000/checkout', {
